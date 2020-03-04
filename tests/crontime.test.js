@@ -160,6 +160,223 @@ describe('crontime', function() {
 		expect(ct.source.isSame(d.getTime())).toBe(true);
 	});
 
+	describe('build from options object', function() {
+		it('should test defaults', function() {
+			expect(function() {
+				const ct = new cron.CronTime({});
+				expect(ct.toString()).toEqual('0 * * * * *');
+			}).not.toThrow();
+		});
+
+		it('should test stars (* * * * * *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({ second: '*' });
+				expect(ct.toString()).toEqual('* * * * * *');
+			}).not.toThrow();
+		});
+
+		it('should test digit (0 * * * * *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({ second: 0 });
+				expect(ct.toString()).toEqual('0 * * * * *');
+			}).not.toThrow();
+		});
+
+		it('should test multi digits (08 * * * * *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({ second: '08' });
+				expect(ct.toString()).toEqual('8 * * * * *');
+			}).not.toThrow();
+		});
+
+		it('should test all digits (08 8 8 8 8 5)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: '08',
+					minute: 8,
+					hour: 8,
+					dayOfMonth: 8,
+					month: 8,
+					dayOfWeek: 5
+				});
+				expect(ct.toString()).toEqual('8 8 8 8 8 5');
+			}).not.toThrow();
+		});
+
+		it('should test standard cron format (8 8 8 8 5)', function() {
+			const standard = new cron.CronTime({
+				minute: 8,
+				hour: 8,
+				dayOfMonth: 8,
+				month: 8,
+				dayOfWeek: 5
+			});
+			const extended = new cron.CronTime({
+				second: 0,
+				minute: 8,
+				hour: 8,
+				dayOfMonth: 8,
+				month: 8,
+				dayOfWeek: 5
+			});
+
+			expect(standard.dayOfWeek).toEqual(extended.dayOfWeek);
+			expect(standard.month).toEqual(extended.month);
+			expect(standard.dayOfMonth).toEqual(extended.dayOfMonth);
+			expect(standard.hour).toEqual(extended.hour);
+			expect(standard.minute).toEqual(extended.minute);
+			expect(standard.second).toEqual(extended.second);
+		});
+
+		it('should test hyphen (0-10 * * * * *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({ second: '0-10' });
+				expect(ct.toString()).toEqual('0,1,2,3,4,5,6,7,8,9,10 * * * * *');
+			}).not.toThrow();
+		});
+
+		it('should test multi hyphens (0-10 0-10 * * * *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: '0-10',
+					minute: '0-10'
+				});
+				expect(ct.toString()).toEqual([
+					'0,1,2,3,4,5,6,7,8,9,10',
+					'0,1,2,3,4,5,6,7,8,9,10',
+					'*',
+					'*',
+					'*',
+					'*'
+				].join(' '));
+			}).not.toThrow();
+		});
+
+		it('should test all hyphens (0-10 0-10 1-10 1-10 0-6 0-1)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: '0-10',
+					minute: '0-10',
+					hour: '1-10',
+					dayOfMonth: '1-10',
+					month: '0-6',
+					dayOfWeek: '0-1'
+				});
+				expect(ct.toString()).toEqual([
+					'0,1,2,3,4,5,6,7,8,9,10',
+					'0,1,2,3,4,5,6,7,8,9,10',
+					'1,2,3,4,5,6,7,8,9,10',
+					'1,2,3,4,5,6,7,8,9,10',
+					'0,1,2,3,4,5,6 0,1'
+				].join(' '));
+			}).not.toThrow();
+		});
+
+		it('should test comma (0,10 * * * * *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({ second: [0, 10] });
+				expect(ct.toString()).toEqual('0,10 * * * * *');
+			}).not.toThrow();
+		});
+
+		it('should test multi commas (0,10 0,10 * * * *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: [0, 10],
+					minute: [0, 10]
+				});
+				expect(ct.toString()).toEqual('0,10 0,10 * * * *');
+			}).not.toThrow();
+		});
+
+		it('should test all commas (0,10 0,10 1,10 1,10 0,6 0,1)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: [0, 10],
+					minute: [0, 10],
+					hour: [1, 10],
+					dayOfMonth: [1, 10],
+					month: [0, 6],
+					dayOfWeek: [0, 1]
+				});
+				expect(ct.toString()).toEqual('0,10 0,10 1,10 1,10 0,6 0,1');
+			}).not.toThrow();
+		});
+
+		it('should test alias (* * * * jan *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: '*',
+					month: 'jan'
+				});
+				expect(ct.toString()).toEqual('* * * * 0 *');
+			}).not.toThrow();
+		});
+
+		it('should test multi aliases (* * * * jan,feb *)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: '*',
+					month: ['jan', 'feb']
+				});
+				expect(ct.toString()).toEqual('* * * * 0,1 *');
+			}).not.toThrow();
+		});
+
+		it('should test all aliases (* * * * jan,feb mon,tue)', function() {
+			expect(function() {
+				const ct = new cron.CronTime({
+					second: '*',
+					month: ['jan', 'feb'],
+					dayOfWeek: ['mon', 'tue']
+				});
+				expect(ct.toString()).toEqual('* * * * 0,1 1,2');
+			}).not.toThrow();
+		});
+
+		it('should test unknown alias (* * * * jar *)', function() {
+			expect(function() {
+				new cron.CronTime({
+					second: '*',
+					month: 'jar'
+				});
+			}).toThrow();
+		});
+
+		it('should test unknown alias - short (* * * * j *)', function() {
+			expect(function() {
+				new cron.CronTime({
+					second: '*',
+					month: 'j'
+				});
+			}).toThrow();
+		});
+
+		it('should test out of range values', function() {
+			expect(function() {
+				new cron.CronTime({ dayOfWeek: 1234 });
+			}).toThrow();
+		});
+
+		it('should test invalid wildcard expression', function() {
+			expect(function() {
+				new cron.CronTime({ dayOfWeek: '0*' });
+			}).toThrow();
+		});
+
+		it('should test invalid step', function() {
+			expect(function() {
+				new cron.CronTime({ month: '1/0' });
+			}).toThrow();
+		});
+
+		it('should test invalid range', function() {
+			expect(function() {
+				new cron.CronTime({  hour: '2-1' });
+			}).toThrow();
+		});
+	});
+
 	it('should test day roll-over', function() {
 		const numHours = 24;
 		const ct = new cron.CronTime('0 0 17 * * *');
