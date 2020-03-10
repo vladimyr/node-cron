@@ -1,6 +1,6 @@
 'use strict';
 
-const cron = require('../lib/cron');
+const cron = require('..');
 const moment = require('moment-timezone');
 const sinon = require('sinon');
 
