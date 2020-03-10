@@ -1,6 +1,6 @@
 {
     "name": "cronjs",
-    "homepage": "https://github.com/ncb000gt/node-cron",
+    "homepage": "https://github.com/kelektiv/node-cron",
     "authors": [
         "Romain Beauxis<toots@rastageeks.org>",
         "James Padoulsey<@padolsey>",
@@ -24,6 +24,7 @@
         "node_modules",
         "bower_components",
         "test",
-        "tests"
+        "tests",
+        "examples"
     ]
 }
