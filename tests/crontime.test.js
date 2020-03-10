@@ -1,46 +1,35 @@
-/* eslint-disable no-new */
-const sinon = require('sinon');
+'use strict';
+
 const cron = require('../lib/cron');
 const moment = require('moment-timezone');
+const sinon = require('sinon');
 
-describe('crontime', function() {
-	it('should test stars (* * * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('* * * * * *');
-		}).not.toThrow();
+describe('crontime', () => {
+	it('should test stars (* * * * * *)', () => {
+		expect(() => new cron.CronTime('* * * * * *')).not.toThrow();
 	});
 
-	it('should test digit (0 * * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('0 * * * * *');
-		}).not.toThrow();
+	it('should test digit (0 * * * * *)', () => {
+		expect(() => new cron.CronTime('0 * * * * *')).not.toThrow();
 	});
 
-	it('should test multi digits (08 * * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('08 * * * * *');
-		}).not.toThrow();
+	it('should test multi digits (08 * * * * *)', () => {
+		expect(() => new cron.CronTime('08 * * * * *')).not.toThrow();
 	});
 
-	it('should test all digits (08 8 8 8 8 5)', function() {
-		expect(function() {
-			new cron.CronTime('08 * * * * *');
-		}).not.toThrow();
+	it('should test all digits (08 8 8 8 8 5)', () => {
+		expect(() => new cron.CronTime('08 * * * * *')).not.toThrow();
 	});
 
-	it('should test too many digits (08 8 8 8 8 5)', function() {
-		expect(function() {
-			new cron.CronTime('08 * * * * *');
-		}).not.toThrow();
+	it('should test too many digits (08 8 8 8 8 5)', () => {
+		expect(() => new cron.CronTime('08 * * * * *')).not.toThrow();
 	});
 
-	it('should test standard cron format (* * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('* * * * *');
-		}).not.toThrow();
+	it('should test standard cron format (* * * * *)', () => {
+		expect(() => new cron.CronTime('* * * * *')).not.toThrow();
 	});
 
-	it('should test standard cron format (8 8 8 8 5)', function() {
+	it('should test standard cron format (8 8 8 8 5)', () => {
 		const standard = new cron.CronTime('8 8 8 8 5');
 		const extended = new cron.CronTime('0 8 8 8 8 5');
 
@@ -52,115 +41,85 @@ describe('crontime', function() {
 		expect(standard.second).toEqual(extended.second);
 	});
 
-	it('should test hyphen (0-10 * * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('0-10 * * * * *');
+	it('should test hyphen (0-10 * * * * *)', () => {
+		expect(() => new cron.CronTime('0-10 * * * * *')).not.toThrow();
+	});
+
+	it('should test multi hyphens (0-10 0-10 * * * *)', () => {
+		expect(() => new cron.CronTime('0-10 0-10 * * * *')).not.toThrow();
+	});
+
+	it('should test all hyphens (0-10 0-10 1-10 1-10 0-6 0-1)', () => {
+		expect(() => {
+			return new cron.CronTime('0-10 0-10 1-10 1-10 0-6 0-1');
 		}).not.toThrow();
 	});
 
-	it('should test multi hyphens (0-10 0-10 * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('0-10 0-10 * * * *');
+	it('should test comma (0,10 * * * * *)', () => {
+		expect(() => new cron.CronTime('0,10 * * * * *')).not.toThrow();
+	});
+
+	it('should test multi commas (0,10 0,10 * * * *)', () => {
+		expect(() => new cron.CronTime('0,10 0,10 * * * *')).not.toThrow();
+	});
+
+	it('should test all commas (0,10 0,10 1,10 1,10 0,6 0,1)', () => {
+		expect(() => {
+			return new cron.CronTime('0,10 0,10 1,10 1,10 0,6 0,1');
 		}).not.toThrow();
 	});
 
-	it('should test all hyphens (0-10 0-10 1-10 1-10 0-6 0-1)', function() {
-		expect(function() {
-			new cron.CronTime('0-10 0-10 1-10 1-10 0-6 0-1');
-		}).not.toThrow();
+	it('should test alias (* * * * jan *)', () => {
+		expect(() => new cron.CronTime('* * * * jan *')).not.toThrow();
 	});
 
-	it('should test comma (0,10 * * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('0,10 * * * * *');
-		}).not.toThrow();
+	it('should test multi aliases (* * * * jan,feb *)', () => {
+		expect(() => new cron.CronTime('* * * * jan,feb *')).not.toThrow();
 	});
 
-	it('should test multi commas (0,10 0,10 * * * *)', function() {
-		expect(function() {
-			new cron.CronTime('0,10 0,10 * * * *');
-		}).not.toThrow();
+	it('should test all aliases (* * * * jan,feb mon,tue)', () => {
+		expect(() => new cron.CronTime('* * * * jan,feb mon,tue')).not.toThrow();
 	});
 
-	it('should test all commas (0,10 0,10 1,10 1,10 0,6 0,1)', function() {
-		expect(function() {
-			new cron.CronTime('0,10 0,10 1,10 1,10 0,6 0,1');
-		}).not.toThrow();
+	it('should test unknown alias (* * * * jar *)', () => {
+		expect(() => new cron.CronTime('* * * * jar *')).toThrow();
 	});
 
-	it('should test alias (* * * * jan *)', function() {
-		expect(function() {
-			new cron.CronTime('* * * * jan *');
-		}).not.toThrow();
+	it('should test unknown alias - short (* * * * j *)', () => {
+		expect(() => new cron.CronTime('* * * * j *')).toThrow();
 	});
 
-	it('should test multi aliases (* * * * jan,feb *)', function() {
-		expect(function() {
-			new cron.CronTime('* * * * jan,feb *');
-		}).not.toThrow();
+	it('should test too few fields', () => {
+		expect(() => new cron.CronTime('* * * *', null, null)).toThrow();
 	});
 
-	it('should test all aliases (* * * * jan,feb mon,tue)', function() {
-		expect(function() {
-			new cron.CronTime('* * * * jan,feb mon,tue');
-		}).not.toThrow();
+	it('should test too many fields', () => {
+		expect(() => new cron.CronTime('* * * * * * *', null, null)).toThrow();
 	});
 
-	it('should test unknown alias (* * * * jar *)', function() {
-		expect(function() {
-			new cron.CronTime('* * * * jar *');
-		}).toThrow();
+	it('should test out of range values', () => {
+		expect(() => new cron.CronTime('* * * * 1234', null, null)).toThrow();
 	});
 
-	it('should test unknown alias - short (* * * * j *)', function() {
-		expect(function() {
-			new cron.CronTime('* * * * j *');
-		}).toThrow();
+	it('should test invalid wildcard expression', () => {
+		expect(() => new cron.CronTime('* * * * 0*')).toThrow();
 	});
 
-	it('should test too few fields', function() {
-		expect(function() {
-			new cron.CronTime('* * * *', null, null);
-		}).toThrow();
+	it('should test invalid step', () => {
+		expect(() => new cron.CronTime('* * * 1/0 *')).toThrow();
 	});
 
-	it('should test too many fields', function() {
-		expect(function() {
-			new cron.CronTime('* * * * * * *', null, null);
-		}).toThrow();
+	it('should test invalid range', () => {
+		expect(() => new cron.CronTime('* 2-1 * * *')).toThrow();
 	});
 
-	it('should test out of range values', function() {
-		expect(function() {
-			new cron.CronTime('* * * * 1234', null, null);
-		}).toThrow();
-	});
-
-	it('should test invalid wildcard expression', function() {
-		expect(function() {
-			new cron.CronTime('* * * * 0*');
-		}).toThrow();
-	});
-
-	it('should test invalid step', function() {
-		expect(function() {
-			new cron.CronTime('* * * 1/0 *');
-		}).toThrow();
-	});
-
-	it('should test invalid range', function() {
-		expect(function() {
-			new cron.CronTime('* 2-1 * * *');
-		}).toThrow();
-	});
-
-	it('should test Date', function() {
+	it('should test Date', () => {
 		const d = new Date();
 		const ct = new cron.CronTime(d);
 		expect(ct.source.isSame(d.getTime())).toBe(true);
 	});
 
-	it('should test day roll-over', function() {
+	it('should test day roll-over', () => {
 		const numHours = 24;
 		const ct = new cron.CronTime('0 0 17 * * *');
 
@@ -172,13 +131,11 @@ describe('crontime', function() {
 		}
 	});
 
-	it('should test illegal repetition syntax', function() {
-		expect(function() {
-			new cron.CronTime('* * /4 * * *');
-		}).toThrow();
+	it('should test illegal repetition syntax', () => {
+		expect(() => new cron.CronTime('* * /4 * * *')).toThrow();
 	});
 
-	it('should test next date', function() {
+	it('should test next date', () => {
 		const ct = new cron.CronTime('0 0 */4 * * *');
 
 		const nextDate = new Date();
@@ -189,18 +146,17 @@ describe('crontime', function() {
 		expect(nextdt.hours() % 4).toEqual(0);
 	});
 
-	it('should throw an exception because next date is invalid', function() {
+	it('should throw an exception because next date is invalid', () => {
 		const ct = new cron.CronTime('0 0 * * * *');
 		const nextDate = new Date('My invalid date string');
 		try {
-			// eslint-disable-next-line no-unused-vars
-			const nextdt = ct._getNextDateFrom(nextDate);
+			ct._getNextDateFrom(nextDate);
 		} catch (e) {
 			expect(e.message).toEqual('ERROR: You specified an invalid date.');
 		}
 	});
 
-	it('should test next real date', function() {
+	it('should test next real date', () => {
 		const initialDate = new Date();
 		const ct = new cron.CronTime(initialDate);
 
@@ -215,33 +171,29 @@ describe('crontime', function() {
 		expect(nextdt.isSame(initialDate)).toBeTruthy();
 	});
 
-	describe('should throw an exception because `L` not supported', function() {
-		it('(* * * L * *)', function() {
-			expect(function() {
-				new cron.CronTime('* * * L * *');
-			}).toThrow();
+	describe('should throw an exception because `L` not supported', () => {
+		it('(* * * L * *)', () => {
+			expect(() => new cron.CronTime('* * * L * *')).toThrow();
 		});
 
-		it('(* * * * * L)', function() {
-			expect(function() {
-				new cron.CronTime('* * * * * L');
-			}).toThrow();
+		it('(* * * * * L)', () => {
+			expect(() => new cron.CronTime('* * * * * L')).toThrow();
 		});
 	});
 
-	it('should strip off millisecond', function() {
+	it('should strip off millisecond', () => {
 		const cronTime = new cron.CronTime('0 */10 * * * *');
 		const x = cronTime._getNextDateFrom(new Date('2018-08-10T02:20:00.999Z'));
 		expect(x.toISOString()).toEqual('2018-08-10T02:30:00.000Z');
 	});
 
-	it('should strip off millisecond (2)', function() {
+	it('should strip off millisecond (2)', () => {
 		const cronTime = new cron.CronTime('0 */10 * * * *');
 		const x = cronTime._getNextDateFrom(new Date('2018-08-10T02:19:59.999Z'));
 		expect(x.toISOString()).toEqual('2018-08-10T02:20:00.000Z');
 	});
 
-	it('should generete the right next days when cron is set to every minute', function() {
+	it('should generete the right next days when cron is set to every minute', () => {
 		const cronTime = new cron.CronTime('* * * * *');
 		const min = 60000;
 		let previousDate = new Date(Date.UTC(2018, 5, 3, 0, 0));
@@ -252,7 +204,7 @@ describe('crontime', function() {
 		}
 	});
 
-	it('should generete the right next days when cron is set to every 15 min', function() {
+	it('should generete the right next days when cron is set to every 15 min', () => {
 		const cronTime = new cron.CronTime('*/15 * * * *');
 		const min = 60000 * 15;
 		let previousDate = new Date(Date.UTC(2016, 6, 3, 0, 0));
@@ -262,7 +214,8 @@ describe('crontime', function() {
 			previousDate = nextDate;
 		}
 	});
-	it('should work around time zone changes that shifts time back (1)', function() {
+
+	it('should work around time zone changes that shifts time back (1)', () => {
 		const d = new Date('10-7-2018');
 		// America/Sao_Paulo has a time zone change around NOV 3 2018.
 		const cronTime = new cron.CronTime('0 0 9 4 * *');
@@ -271,14 +224,16 @@ describe('crontime', function() {
 			moment('2018-11-04T09:00:00.000-02:00').valueOf()
 		);
 	});
-	it('should work around time zone changes that shifts time back (2)', function() {
+
+	it('should work around time zone changes that shifts time back (2)', () => {
 		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
 		const d = moment.tz('2018-10-25T23:00', 'Asia/Amman');
 		const cronTime = new cron.CronTime('0 0 * * *');
 		const nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman');
 		expect(nextDate - moment.tz('2018-10-26T00:00', 'Asia/Amman')).toEqual(0);
 	});
-	it('should work around time zone changes that shifts time forward', function() {
+
+	it('should work around time zone changes that shifts time forward', () => {
 		// Asia/Amman DST starts in  30-March-2018 (+1 to hours)
 		let currentDate = moment.tz('2018-03-29T23:00', 'Asia/Amman');
 		const cronTime = new cron.CronTime('* * * * *');
@@ -288,7 +243,8 @@ describe('crontime', function() {
 			currentDate = nextDate;
 		}
 	});
-	it('should generate the right  N next days for * * * * *', function() {
+
+	it('should generate the right N next days for * * * * *', () => {
 		const cronTime = new cron.CronTime('* * * * *');
 		let currentDate = moment()
 			.seconds(0)
@@ -299,7 +255,8 @@ describe('crontime', function() {
 			currentDate = nextDate;
 		}
 	});
-	it('should generate the right  N next days for 0 0 9 * * *', function() {
+
+	it('should generate the right N next days for 0 0 9 * * *', () => {
 		const cronTime = new cron.CronTime('0 0 9 * * *');
 		let currentDate = moment()
 			.utc()
@@ -313,7 +270,8 @@ describe('crontime', function() {
 			currentDate = nextDate;
 		}
 	});
-	it('should generate the right  N next days for 0 0 * * * with a time zone', function() {
+
+	it('should generate the right N next days for 0 0 * * * with a time zone', () => {
 		const cronTime = new cron.CronTime('0 * * * *');
 		let currentDate = moment
 			.tz('2018-11-02T23:00', 'America/Sao_Paulo')
@@ -328,7 +286,8 @@ describe('crontime', function() {
 			currentDate = nextDate;
 		}
 	});
-	it('should generate the right  N next days for */3 * * * * with a time zone', function() {
+
+	it('should generate the right N next days for */3 * * * * with a time zone', () => {
 		const cronTime = new cron.CronTime('*/3 * * * *');
 		let currentDate = moment
 			.tz('2018-11-02T23:00', 'America/Sao_Paulo')
@@ -343,7 +302,8 @@ describe('crontime', function() {
 			currentDate = nextDate;
 		}
 	});
-	it('should generete the right next day when cron is set to every 15 min in Feb', function() {
+
+	it('should generete the right next day when cron is set to every 15 min in Feb', () => {
 		const cronTime = new cron.CronTime('*/15 * * FEB *');
 		const previousDate = new Date(Date.UTC(2018, 3, 0, 0, 0));
 		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
@@ -351,7 +311,8 @@ describe('crontime', function() {
 			new Date(Date.UTC(2019, 1, 1, 0, 0)).valueOf()
 		);
 	});
-	it('should generate the right next day when cron is set to both day of the month and day of the week (1)', function() {
+
+	it('should generate the right next day when cron is set to both day of the month and day of the week (1)', () => {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
 		const previousDate = new Date(Date.UTC(2019, 3, 22, 0, 0));
 		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
@@ -359,7 +320,8 @@ describe('crontime', function() {
 			new Date(Date.UTC(2019, 3, 25, 8, 0)).valueOf()
 		);
 	});
-	it('should generate the right next day when cron is set to both day of the month and day of the week (2)', function() {
+
+	it('should generate the right next day when cron is set to both day of the month and day of the week (2)', () => {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
 		const previousDate = new Date(Date.UTC(2019, 3, 26, 0, 0));
 		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
@@ -367,7 +329,8 @@ describe('crontime', function() {
 			new Date(Date.UTC(2019, 4, 1, 8, 0)).valueOf()
 		);
 	});
-	it('should generate the right next day when cron is set to both day of the month and day of the week (3)', function() {
+
+	it('should generate the right next day when cron is set to both day of the month and day of the week (3)', () => {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
 		const previousDate = new Date(Date.UTC(2019, 7, 1, 7, 59));
 		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
@@ -376,7 +339,7 @@ describe('crontime', function() {
 		);
 	});
 
-	it('should accept 0 as a valid UTC offset', function() {
+	it('should accept 0 as a valid UTC offset', () => {
 		const clock = sinon.useFakeTimers();
 
 		const cronTime = new cron.CronTime('0 11 * * *', null, 0);
@@ -390,7 +353,7 @@ describe('crontime', function() {
 		clock.restore();
 	});
 
-	it('should accept -120 as a valid UTC offset', function() {
+	it('should accept -120 as a valid UTC offset', () => {
 		const clock = sinon.useFakeTimers();
 
 		const cronTime = new cron.CronTime('0 11 * * *', null, -120);
