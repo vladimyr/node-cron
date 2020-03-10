@@ -12,6 +12,7 @@
   },
   "main": "lib/cron",
   "scripts": {
+    "lint": "eslint .",
     "test": "jest"
   },
   "dependencies": {

@@ -1,18 +1,8 @@
 {
 	"extends": ["standard", "prettier", "prettier/standard"],
 	"parserOptions": {
-		"ecmaVersion": "2017",
+		"ecmaVersion": 2017,
 		"sourceType": "module"
-	},
-	"globals": {
-		"define": true,
-		"after": true,
-		"afterEach": true,
-		"before": true,
-		"beforeEach": true,
-		"describe": true,
-		"expect": true,
-		"it": true
 	},
 	"env": {
 		"browser": true,
@@ -21,8 +11,8 @@
 	},
 	"plugins": ["prettier", "standard", "jest"],
 	"rules": {
-		"space-before-function-paren": 0,
-		"new-cap": 0,
-		"prettier/prettier": 2
+		"space-before-function-paren": "off",
+		"new-cap": "off",
+		"prettier/prettier": "error"
 	}
 }
