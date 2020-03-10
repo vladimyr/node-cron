@@ -1,7 +1,9 @@
-const CronJob = require('../lib/cron.js').CronJob;
+'use strict';
+
+const { CronJob } = require('..');
 
 console.log('Before job instantiation');
-const job = new CronJob('00 00 00 * * *', function() {
+const job = new CronJob('00 00 00 * * *', () => {
 	const d = new Date();
 	console.log('Midnight:', d);
 });

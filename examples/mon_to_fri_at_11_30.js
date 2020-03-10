@@ -1,7 +1,9 @@
-const CronJob = require('../lib/cron.js').CronJob;
+'use strict';
+
+const { CronJob } = require('..');
 
 console.log('Before job instantiation');
-const job = new CronJob('00 30 11 * * 1-5', function() {
+const job = new CronJob('00 30 11 * * 1-5', () => {
 	const d = new Date();
 	console.log('onTick:', d);
 });

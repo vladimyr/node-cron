@@ -1,9 +1,10 @@
-const CronJob = require('../lib/cron.js').CronJob;
+'use strict';
+
+const { CronJob } = require('..');
 
 try {
-	new CronJob('NOT VALID', () => {
-		console.log('shouldn\'t get printed');
-	});
-} catch(e) {
+	// eslint-disable-next-line no-new
+	new CronJob('NOT VALID', () => console.log("shouldn't get printed"));
+} catch (e) {
 	console.log('omg err', e);
 }

@@ -1,13 +1,14 @@
-const CronJob = require('../lib/cron.js').CronJob;
+'use strict';
+
+const { CronJob } = require('..');
 
 console.log('first');
 const job = new CronJob(
 	'0 0 9 4 * *',
-	function() {
-		console.log('message');
-	},
+	() => console.log('message'),
 	null,
 	true,
 	'America/Sao_Paulo'
 );
 console.log('second');
+job.start();
