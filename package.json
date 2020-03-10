@@ -11,6 +11,9 @@
     "url": "http://github.com/kelektiv/node-cron.git"
   },
   "main": "lib/cron",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "lint": "eslint .",
     "test": "jest"
